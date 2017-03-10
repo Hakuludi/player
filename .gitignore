@@ -1,7 +1,6 @@
 # Logs
 logs
 *.log
-*.mp3
 npm-debug.log*
 
 # Runtime data
