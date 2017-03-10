@@ -49,7 +49,7 @@ button:active {
   width: 600px;
   height: 530px;
   margin: 0 auto;
-  border-radius: 15px;
+  /*border-radius: 15px;*/
   border-top: none;
   overflow: hidden;
   text-align: center;
@@ -134,4 +134,8 @@ button:active {
 .none {
   display: none;
   visibility: none;
+}
+
+.notready {
+  display: none;
 }

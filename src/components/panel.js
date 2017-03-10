@@ -9,8 +9,8 @@ class Panel extends Component {
       volume: 100,
       p: 'fa fa-play',
       vr: 0,
-      url: '',
-      last: ''
+      e: '',
+      url: ''
     }
 
     this.play       = this.play.bind(this);
@@ -21,22 +21,19 @@ class Panel extends Component {
     this.stop       = this.stop.bind(this);
     this.mute       = this.mute.bind(this);
     this.toPlay     = this.toPlay.bind(this);
+    this.backward   = this.backward.bind(this);
+    this.forward    = this.forward.bind(this);
   }
 
   play(set){
     var song = document.getElementById('song');
     if ( this.state.p === 'fa fa-pause' ) {
-      console.debug(song.src , location.origin + this.state.last)
-      if(song.src === location.origin + this.state.last) return false;
       this.setState({ p: 'fa fa-play' });
       song.pause();
     } else {
-      console.debug(song.src , location.origin + this.state.last)
-      if(song.src === location.origin + this.state.last) return false;
       this.setState({ p: 'fa fa-pause' });
       song.play();
     }
-    // this.forceUpdate();
   }
 
   volumeDown() {
@@ -58,8 +55,8 @@ class Panel extends Component {
     var song        = document.getElementById('song');
     var position    = width * ((( song.currentTime * 100 ) / song.duration ) / 100 );
     var progressBar = document.getElementById('progressBar');
-    progressBar.setAttribute("style", "width: " + position + "px;");
-    // console.log(position, ' - ', width);
+    progressBar.setAttribute("style", "width: " + Math.round(position) + "px;");
+    document.getElementById('pbar').title = song.currentTime
   }
 
   reset() {
@@ -86,7 +83,14 @@ class Panel extends Component {
   }
 
   toPlay(e) {
+    console.log(e, '  f  ', this.state.e)
+    this.setState({ e: e })
+    var song = document.getElementById('song');
     this.reset()
+    if(e != this.state.e) { this.stop(); };
+    if(e == this.state.e) { this.play(); };
+
+    this.stop()
     this.setState({ last: this.state.url, url: e.target.children[0].defaultValue })
     // this.forceUpdate();
     this.play()
@@ -97,21 +101,31 @@ class Panel extends Component {
     for(let i = 0; i < allsongs.length; i++){
       allsongs[i].addEventListener('click', this.toPlay)
     }
+    this.setState({ url: allsongs[0].children[0].defaultValue });
+    document.getElementById('song').play()
+  }
+
+  backward() {
+    console.log('backward')
+  }
+
+  forward() {
+    console.log('forward')
   }
 
   render() {
     return(
       <div className="panel">
-        <button><i className="fa fa-backward" aria-hidden="true"></i></button>
+        <button onClick={this.backward} className="notready"><i className="fa fa-backward" aria-hidden="true"></i></button>
         <button onClick={this.play}><i className={this.state.p} aria-hidden="true" ></i></button>
         <button onClick={this.stop}><i className="fa fa-stop" aria-hidden="true"></i></button>
-        <button><i className="fa fa-forward" aria-hidden="true"></i></button>
-        <audio id="song" autoPlay="true" src={this.state.url} onTimeUpdate={this.stime} onEnded={this.reset}></audio>
+        <button onClick={this.forward} className="notready"><i className="fa fa-forward" aria-hidden="true"></i></button>
+        <audio id="song" src={this.state.url} onTimeUpdate={this.stime} onEnded={this.reset}></audio>
         <button onClick={this.volumeDown}><i className="fa fa-volume-down" aria-hidden="true"></i></button>
         <span>  {this.state.volume}% </span>
         <button onClick={this.volumeUp}><i className="fa fa-volume-up" aria-hidden="true"></i></button>
         <button onClick={this.mute}><i className="fa fa-volume-off" aria-hidden="true"></i></button>
-        <div className="progress_width">
+        <div onMouseMove={(e)=>{console.log(e.pageX)}} id="pbar" className="progress_width">
           <div id="progressBar"></div>
         </div>
         <span className="title" >Playlist</span>
