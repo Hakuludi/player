@@ -9,7 +9,8 @@ class Panel extends Component {
       volume: 100,
       p: 'fa fa-play',
       vr: 0,
-      url: ''
+      url: '',
+      last: ''
     }
 
     this.play       = this.play.bind(this);
@@ -22,16 +23,20 @@ class Panel extends Component {
     this.toPlay     = this.toPlay.bind(this);
   }
 
-  play(){
+  play(set){
     var song = document.getElementById('song');
     if ( this.state.p === 'fa fa-pause' ) {
+      console.debug(song.src , location.origin + this.state.last)
+      if(song.src === location.origin + this.state.last) return false;
       this.setState({ p: 'fa fa-play' });
       song.pause();
     } else {
+      console.debug(song.src , location.origin + this.state.last)
+      if(song.src === location.origin + this.state.last) return false;
       this.setState({ p: 'fa fa-pause' });
       song.play();
     }
-    this.forceUpdate();
+    // this.forceUpdate();
   }
 
   volumeDown() {
@@ -49,12 +54,12 @@ class Panel extends Component {
   }
 
   stime() {
-    var width = document.getElementById('progressBar').parentNode.clientWidth;
-    var song  = document.getElementById('song');
-    this.setState({ vr: this.state.vr + 1 });
-    if(!document.getElementById('progressBar').setAttribute("style", "width: " + this.state.vr / 3 + "px;"));
-    document.getElementById('progressBar').style.width = this.state.vr / 3;
-    console.log(song.currentTime, ' - ', width);
+    var width       = document.getElementById('progressBar').parentNode.clientWidth;
+    var song        = document.getElementById('song');
+    var position    = width * ((( song.currentTime * 100 ) / song.duration ) / 100 );
+    var progressBar = document.getElementById('progressBar');
+    progressBar.setAttribute("style", "width: " + position + "px;");
+    // console.log(position, ' - ', width);
   }
 
   reset() {
@@ -81,8 +86,9 @@ class Panel extends Component {
   }
 
   toPlay(e) {
-    this.setState({ url: e.target.children[0].defaultValue })
-    this.forceUpdate();
+    this.reset()
+    this.setState({ last: this.state.url, url: e.target.children[0].defaultValue })
+    // this.forceUpdate();
     this.play()
   }
 
@@ -100,7 +106,7 @@ class Panel extends Component {
         <button onClick={this.play}><i className={this.state.p} aria-hidden="true" ></i></button>
         <button onClick={this.stop}><i className="fa fa-stop" aria-hidden="true"></i></button>
         <button><i className="fa fa-forward" aria-hidden="true"></i></button>
-        <audio id="song" src={this.state.url} onTimeUpdate={this.stime} onEnded={this.reset}></audio>
+        <audio id="song" autoPlay="true" src={this.state.url} onTimeUpdate={this.stime} onEnded={this.reset}></audio>
         <button onClick={this.volumeDown}><i className="fa fa-volume-down" aria-hidden="true"></i></button>
         <span>  {this.state.volume}% </span>
         <button onClick={this.volumeUp}><i className="fa fa-volume-up" aria-hidden="true"></i></button>
@@ -111,143 +117,13 @@ class Panel extends Component {
         <span className="title" >Playlist</span>
         <div className="playlist">
           <div className="song">
-            <input className="none" defaultValue="https://cs1-35v4.vk-cdn.net/p4/e1096b7ec19e42.mp3?extra=-j21XaNMkXNF-kDGfld0_N3jqwPgSlUy5EEW09uEYL3xU61k-kOrAnhJPKLMfiiJqzr0l5kj1SNaVb1Gqpxw7tdPXjx-jIwW8gstPCe0mzwuhudq-qC6FmLYjpSMr_rw8SqFmrVUJ9PS"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
+            <input className="none" defaultValue="/1.mp3"></input>
+            <span className="name">Song 1</span>
             <i className=" status fa fa-play" aria-hidden="true"></i>
           </div>
           <div className="song" >
-            <input className="none" defaultValue="https://cs1-44v4.vk-cdn.net/p11/522d27894cd86f.mp3?extra=sV8ZY-PwvdFXD5MPRXCRP6HNQxLrcliwO7nuimdXHS-JY3obTvwgSRbdfH1R8I1V7TxUZMyyYt7as3edUHxOKw1Umlbna0zBhPXobbKYyF2zlDZ-A4XZ3X9hgtHfJQfMY_MHfzsUIdvc"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song">
-            <input className="none" defaultValue="https://cs1-35v4.vk-cdn.net/p4/e1096b7ec19e42.mp3?extra=-j21XaNMkXNF-kDGfld0_N3jqwPgSlUy5EEW09uEYL3xU61k-kOrAnhJPKLMfiiJqzr0l5kj1SNaVb1Gqpxw7tdPXjx-jIwW8gstPCe0mzwuhudq-qC6FmLYjpSMr_rw8SqFmrVUJ9PS"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song">
-            <input className="none" defaultValue="https://cs1-35v4.vk-cdn.net/p4/e1096b7ec19e42.mp3?extra=-j21XaNMkXNF-kDGfld0_N3jqwPgSlUy5EEW09uEYL3xU61k-kOrAnhJPKLMfiiJqzr0l5kj1SNaVb1Gqpxw7tdPXjx-jIwW8gstPCe0mzwuhudq-qC6FmLYjpSMr_rw8SqFmrVUJ9PS"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song">
-            <input className="none" defaultValue="https://cs1-35v4.vk-cdn.net/p4/e1096b7ec19e42.mp3?extra=-j21XaNMkXNF-kDGfld0_N3jqwPgSlUy5EEW09uEYL3xU61k-kOrAnhJPKLMfiiJqzr0l5kj1SNaVb1Gqpxw7tdPXjx-jIwW8gstPCe0mzwuhudq-qC6FmLYjpSMr_rw8SqFmrVUJ9PS"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song" >
-            <input className="none" defaultValue="https://cs1-44v4.vk-cdn.net/p11/522d27894cd86f.mp3?extra=sV8ZY-PwvdFXD5MPRXCRP6HNQxLrcliwO7nuimdXHS-JY3obTvwgSRbdfH1R8I1V7TxUZMyyYt7as3edUHxOKw1Umlbna0zBhPXobbKYyF2zlDZ-A4XZ3X9hgtHfJQfMY_MHfzsUIdvc"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song">
-            <input className="none" defaultValue="https://cs1-35v4.vk-cdn.net/p4/e1096b7ec19e42.mp3?extra=-j21XaNMkXNF-kDGfld0_N3jqwPgSlUy5EEW09uEYL3xU61k-kOrAnhJPKLMfiiJqzr0l5kj1SNaVb1Gqpxw7tdPXjx-jIwW8gstPCe0mzwuhudq-qC6FmLYjpSMr_rw8SqFmrVUJ9PS"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song">
-            <input className="none" defaultValue="https://cs1-35v4.vk-cdn.net/p4/e1096b7ec19e42.mp3?extra=-j21XaNMkXNF-kDGfld0_N3jqwPgSlUy5EEW09uEYL3xU61k-kOrAnhJPKLMfiiJqzr0l5kj1SNaVb1Gqpxw7tdPXjx-jIwW8gstPCe0mzwuhudq-qC6FmLYjpSMr_rw8SqFmrVUJ9PS"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song">
-            <input className="none" defaultValue="https://cs1-35v4.vk-cdn.net/p4/e1096b7ec19e42.mp3?extra=-j21XaNMkXNF-kDGfld0_N3jqwPgSlUy5EEW09uEYL3xU61k-kOrAnhJPKLMfiiJqzr0l5kj1SNaVb1Gqpxw7tdPXjx-jIwW8gstPCe0mzwuhudq-qC6FmLYjpSMr_rw8SqFmrVUJ9PS"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song" >
-            <input className="none" defaultValue="https://cs1-44v4.vk-cdn.net/p11/522d27894cd86f.mp3?extra=sV8ZY-PwvdFXD5MPRXCRP6HNQxLrcliwO7nuimdXHS-JY3obTvwgSRbdfH1R8I1V7TxUZMyyYt7as3edUHxOKw1Umlbna0zBhPXobbKYyF2zlDZ-A4XZ3X9hgtHfJQfMY_MHfzsUIdvc"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song">
-            <input className="none" defaultValue="https://cs1-35v4.vk-cdn.net/p4/e1096b7ec19e42.mp3?extra=-j21XaNMkXNF-kDGfld0_N3jqwPgSlUy5EEW09uEYL3xU61k-kOrAnhJPKLMfiiJqzr0l5kj1SNaVb1Gqpxw7tdPXjx-jIwW8gstPCe0mzwuhudq-qC6FmLYjpSMr_rw8SqFmrVUJ9PS"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song">
-            <input className="none" defaultValue="https://cs1-35v4.vk-cdn.net/p4/e1096b7ec19e42.mp3?extra=-j21XaNMkXNF-kDGfld0_N3jqwPgSlUy5EEW09uEYL3xU61k-kOrAnhJPKLMfiiJqzr0l5kj1SNaVb1Gqpxw7tdPXjx-jIwW8gstPCe0mzwuhudq-qC6FmLYjpSMr_rw8SqFmrVUJ9PS"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song">
-            <input className="none" defaultValue="https://cs1-35v4.vk-cdn.net/p4/e1096b7ec19e42.mp3?extra=-j21XaNMkXNF-kDGfld0_N3jqwPgSlUy5EEW09uEYL3xU61k-kOrAnhJPKLMfiiJqzr0l5kj1SNaVb1Gqpxw7tdPXjx-jIwW8gstPCe0mzwuhudq-qC6FmLYjpSMr_rw8SqFmrVUJ9PS"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song" >
-            <input className="none" defaultValue="https://cs1-44v4.vk-cdn.net/p11/522d27894cd86f.mp3?extra=sV8ZY-PwvdFXD5MPRXCRP6HNQxLrcliwO7nuimdXHS-JY3obTvwgSRbdfH1R8I1V7TxUZMyyYt7as3edUHxOKw1Umlbna0zBhPXobbKYyF2zlDZ-A4XZ3X9hgtHfJQfMY_MHfzsUIdvc"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song">
-            <input className="none" defaultValue="https://cs1-35v4.vk-cdn.net/p4/e1096b7ec19e42.mp3?extra=-j21XaNMkXNF-kDGfld0_N3jqwPgSlUy5EEW09uEYL3xU61k-kOrAnhJPKLMfiiJqzr0l5kj1SNaVb1Gqpxw7tdPXjx-jIwW8gstPCe0mzwuhudq-qC6FmLYjpSMr_rw8SqFmrVUJ9PS"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song">
-            <input className="none" defaultValue="https://cs1-35v4.vk-cdn.net/p4/e1096b7ec19e42.mp3?extra=-j21XaNMkXNF-kDGfld0_N3jqwPgSlUy5EEW09uEYL3xU61k-kOrAnhJPKLMfiiJqzr0l5kj1SNaVb1Gqpxw7tdPXjx-jIwW8gstPCe0mzwuhudq-qC6FmLYjpSMr_rw8SqFmrVUJ9PS"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song">
-            <input className="none" defaultValue="https://cs1-35v4.vk-cdn.net/p4/e1096b7ec19e42.mp3?extra=-j21XaNMkXNF-kDGfld0_N3jqwPgSlUy5EEW09uEYL3xU61k-kOrAnhJPKLMfiiJqzr0l5kj1SNaVb1Gqpxw7tdPXjx-jIwW8gstPCe0mzwuhudq-qC6FmLYjpSMr_rw8SqFmrVUJ9PS"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song" >
-            <input className="none" defaultValue="https://cs1-44v4.vk-cdn.net/p11/522d27894cd86f.mp3?extra=sV8ZY-PwvdFXD5MPRXCRP6HNQxLrcliwO7nuimdXHS-JY3obTvwgSRbdfH1R8I1V7TxUZMyyYt7as3edUHxOKw1Umlbna0zBhPXobbKYyF2zlDZ-A4XZ3X9hgtHfJQfMY_MHfzsUIdvc"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song">
-            <input className="none" defaultValue="https://cs1-35v4.vk-cdn.net/p4/e1096b7ec19e42.mp3?extra=-j21XaNMkXNF-kDGfld0_N3jqwPgSlUy5EEW09uEYL3xU61k-kOrAnhJPKLMfiiJqzr0l5kj1SNaVb1Gqpxw7tdPXjx-jIwW8gstPCe0mzwuhudq-qC6FmLYjpSMr_rw8SqFmrVUJ9PS"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song">
-            <input className="none" defaultValue="https://cs1-35v4.vk-cdn.net/p4/e1096b7ec19e42.mp3?extra=-j21XaNMkXNF-kDGfld0_N3jqwPgSlUy5EEW09uEYL3xU61k-kOrAnhJPKLMfiiJqzr0l5kj1SNaVb1Gqpxw7tdPXjx-jIwW8gstPCe0mzwuhudq-qC6FmLYjpSMr_rw8SqFmrVUJ9PS"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song">
-            <input className="none" defaultValue="https://cs1-35v4.vk-cdn.net/p4/e1096b7ec19e42.mp3?extra=-j21XaNMkXNF-kDGfld0_N3jqwPgSlUy5EEW09uEYL3xU61k-kOrAnhJPKLMfiiJqzr0l5kj1SNaVb1Gqpxw7tdPXjx-jIwW8gstPCe0mzwuhudq-qC6FmLYjpSMr_rw8SqFmrVUJ9PS"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song" >
-            <input className="none" defaultValue="https://cs1-44v4.vk-cdn.net/p11/522d27894cd86f.mp3?extra=sV8ZY-PwvdFXD5MPRXCRP6HNQxLrcliwO7nuimdXHS-JY3obTvwgSRbdfH1R8I1V7TxUZMyyYt7as3edUHxOKw1Umlbna0zBhPXobbKYyF2zlDZ-A4XZ3X9hgtHfJQfMY_MHfzsUIdvc"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song">
-            <input className="none" defaultValue="https://cs1-35v4.vk-cdn.net/p4/e1096b7ec19e42.mp3?extra=-j21XaNMkXNF-kDGfld0_N3jqwPgSlUy5EEW09uEYL3xU61k-kOrAnhJPKLMfiiJqzr0l5kj1SNaVb1Gqpxw7tdPXjx-jIwW8gstPCe0mzwuhudq-qC6FmLYjpSMr_rw8SqFmrVUJ9PS"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song">
-            <input className="none" defaultValue="https://cs1-35v4.vk-cdn.net/p4/e1096b7ec19e42.mp3?extra=-j21XaNMkXNF-kDGfld0_N3jqwPgSlUy5EEW09uEYL3xU61k-kOrAnhJPKLMfiiJqzr0l5kj1SNaVb1Gqpxw7tdPXjx-jIwW8gstPCe0mzwuhudq-qC6FmLYjpSMr_rw8SqFmrVUJ9PS"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song">
-            <input className="none" defaultValue="https://cs1-35v4.vk-cdn.net/p4/e1096b7ec19e42.mp3?extra=-j21XaNMkXNF-kDGfld0_N3jqwPgSlUy5EEW09uEYL3xU61k-kOrAnhJPKLMfiiJqzr0l5kj1SNaVb1Gqpxw7tdPXjx-jIwW8gstPCe0mzwuhudq-qC6FmLYjpSMr_rw8SqFmrVUJ9PS"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song" >
-            <input className="none" defaultValue="https://cs1-44v4.vk-cdn.net/p11/522d27894cd86f.mp3?extra=sV8ZY-PwvdFXD5MPRXCRP6HNQxLrcliwO7nuimdXHS-JY3obTvwgSRbdfH1R8I1V7TxUZMyyYt7as3edUHxOKw1Umlbna0zBhPXobbKYyF2zlDZ-A4XZ3X9hgtHfJQfMY_MHfzsUIdvc"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song">
-            <input className="none" defaultValue="https://cs1-35v4.vk-cdn.net/p4/e1096b7ec19e42.mp3?extra=-j21XaNMkXNF-kDGfld0_N3jqwPgSlUy5EEW09uEYL3xU61k-kOrAnhJPKLMfiiJqzr0l5kj1SNaVb1Gqpxw7tdPXjx-jIwW8gstPCe0mzwuhudq-qC6FmLYjpSMr_rw8SqFmrVUJ9PS"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
-            <i className=" status fa fa-play" aria-hidden="true"></i>
-          </div>
-          <div className="song">
-            <input className="none" defaultValue="https://cs1-35v4.vk-cdn.net/p4/e1096b7ec19e42.mp3?extra=-j21XaNMkXNF-kDGfld0_N3jqwPgSlUy5EEW09uEYL3xU61k-kOrAnhJPKLMfiiJqzr0l5kj1SNaVb1Gqpxw7tdPXjx-jIwW8gstPCe0mzwuhudq-qC6FmLYjpSMr_rw8SqFmrVUJ9PS"></input>
-            <span className="name">Wfldsjl  klasdfljlasdjfl falsdjfl34534</span>
+            <input className="none" defaultValue="/2.mp3"></input>
+            <span className="name">Song 2</span>
             <i className=" status fa fa-play" aria-hidden="true"></i>
           </div>
         </div>

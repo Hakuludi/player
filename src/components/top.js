@@ -10,7 +10,7 @@ class Top extends Component {
   render() {
     return(
       <div className="top">
-        <p className="header" onClick={this.reload.bind(this)} >SimpleMP3Player</p>
+        <p className="header" onClick={this.reload.bind(this)}>Player</p>
       </div>
     )
   }
